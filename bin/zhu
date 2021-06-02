@@ -1,0 +1,48 @@
+#! /usr/bin/env node
+
+// 1、使用commander插件配置可执行命令
+const program = require('commander');
+// npm install chalk(粉笔)
+const chalk = require('chalk'); // 此插件用来给文字添加颜色
+
+program
+    .command(`create <app-name>`) // command 方法是添加命令行命令
+    .description(`create a new project`)
+    .option(`-f, --force`, 'overwrite target directory if it exists') // 给这个命令行添加参数
+    .action((name, cmd) => { // 这里的name对应的是command后的<app-name> cmd 对应的就是参数
+        console.log(name, cmd);
+    })
+
+
+// vue config --get a 
+// vue config --set a 1
+program
+    .command(`config [value]`)
+    .description('inspect and modify the config')
+    .option('-g, --get <path>', 'get value from option')
+    .option('-s, --set <path> <value>')
+    .option('-d, --delete <path>', 'delete option from config')
+    .action((name, cmd) => {
+        console.log(name, cmd);
+    })
+
+program
+    .command('ui')
+    .description('start and open cli-learn ui')
+    .option('-p, --port <port>', 'Port used for the UI Serve')
+    .action((cmd) => {
+        console.log(cmd);
+    })
+
+// 未添加此命令时执行 zhu --help => Usage: zhu [options]
+// 配置过此命令执行   zhu --help => Usage: zhu <command> [option]
+program
+    .version(`cli-learn@${require('../package.json').version}`) // 添加-V --version命令
+    .usage(`<command> [option]`) // 这个命令修改的是Usage: zhu [options] 
+
+program.on('--help', function() {
+            console.log(`Run ${chalk.blue(`cli-learn <command> --help`)} show details`);
+})
+
+// 解析shell语句执行命令传入的参数 配置了次参数命令行就添加了 zhu --help 命令
+program.parse(process.argv);
